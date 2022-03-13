@@ -1,6 +1,6 @@
 # dev-containers
 
-# With `Dockerfile`
+## With `Dockerfile`
 
 ```json
 {
@@ -10,7 +10,7 @@
 }
 ```
 
-# With `docker-compose.yml`
+## With `docker-compose.yml`
 
 - make sure [nvidia-container-runtime](https://github.com/NVIDIA/nvidia-container-runtime)
 - create runtime in `/etc/docker/daemon.json` then `sudo systemctl daemon-reload` and `sudo systemctl restart docker`
