@@ -1,0 +1,23 @@
+version: '3'
+services:
+  main:
+    container_name: cuda-python
+    build: 
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+      args:
+        - VARIANT=3.8
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    volumes:
+      - .:/workspace:cached
+      # Persist VS Code extensions between rebuilds
+      - vscode-extensions:/root/.vscode-server/extensions
+      - $HOME/.zhistory:/home/vscode/.zhistory:cached
+    network_mode: host
+    command: /bin/sh -c "while sleep 1000; do :; done"
+
+
+volumes:
+  vscode-extensions:
