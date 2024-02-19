@@ -1,0 +1,34 @@
+version: '3'
+services:
+  prepare-container-volume:
+    # clone the repository from ARG into a volume
+    image: alpine/git
+    command: clone $REPO_URL /repo
+    volumes:
+      - repo:/repo
+  build-devcontainer-image:
+    # build the devcontainer image
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - repo:/repo
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: devcontainer build --workspace-folder /repo --image-name rainforest-dev/$NAME
+    depends_on:
+      - prepare-container-volume
+  create-devcontainer:
+    # create the devcontainer
+    image: rainforest-dev/$NAME
+    container_name: $NAME
+    pull_policy: never
+    volumes:
+      - repo:/workspaces/$NAME
+    depends_on:
+      - build-devcontainer-image
+    entrypoint: /bin/sh
+    command: -c "while sleep 1000; do :; done"
+    
+  
+volumes:
+  repo:
