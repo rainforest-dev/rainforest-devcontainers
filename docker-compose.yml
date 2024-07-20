@@ -1,34 +1,51 @@
-version: '3'
 services:
-  prepare-container-volume:
-    # clone the repository from ARG into a volume
-    image: alpine/git
-    command: clone $REPO_URL /repo
+
+  webui:
+    image: ghcr.io/open-webui/open-webui:latest
+    expose:
+     - 8080/tcp
+    ports:
+     - 8080:8080/tcp
+    environment:
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+    extra_hosts:
+      - host.docker.internal:host-gateway
     volumes:
-      - repo:/repo
-  build-devcontainer-image:
-    # build the devcontainer image
-    build:
-      context: .
-      dockerfile: Dockerfile
-    volumes:
-      - repo:/repo
-      - /var/run/docker.sock:/var/run/docker.sock
-    command: devcontainer build --workspace-folder /repo --image-name rainforest-dev/$NAME
+      - open-webui:/app/backend/data
+    restart: unless-stopped
     depends_on:
-      - prepare-container-volume
-  create-devcontainer:
-    # create the devcontainer
-    image: rainforest-dev/$NAME
-    container_name: $NAME
-    pull_policy: never
+     - ollama
+
+  ollama:
+    container_name: ollama
+    image: ollama/ollama
+    expose:
+     - 11434/tcp
+    ports:
+     - 11434:11434/tcp
+    healthcheck:
+      test: ollama --version || exit 1
+    command: serve
     volumes:
-      - repo:/workspaces/$NAME
-    depends_on:
-      - build-devcontainer-image
-    entrypoint: /bin/sh
-    command: -c "while sleep 1000; do :; done"
-    
-  
+      - ollama:/root/.ollama
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['all']
+              capabilities: [gpu]
+
+  # tunnel:
+  #   image: cloudflare/cloudflared:latest
+  #   restart: unless-stopped
+  #   environment:
+  #     - TUNNEL_URL=http://webui:8080
+  #   command: tunnel --no-autoupdate
+  #   depends_on:
+  #     - webui
+
 volumes:
-  repo:
+  ollama:
+  open-webui:
