@@ -36,6 +36,13 @@ services:
             - driver: nvidia
               device_ids: ['all']
               capabilities: [gpu]
+  speedtest:
+    restart: unless-stopped
+    container_name: openspeedtest
+    ports:
+      - '3000:3000'
+      - '3001:3001'
+    image: openspeedtest/latest
 
   # tunnel:
   #   image: cloudflare/cloudflared:latest
