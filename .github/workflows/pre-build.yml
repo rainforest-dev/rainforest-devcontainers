@@ -9,7 +9,7 @@ jobs:
   pre-build:
     strategy:
       matrix:
-        os: [macos-latest]
+        os: [ubuntu-24.04-arm]
         module: [nx, node]
     runs-on: ${{ matrix.os }}
     steps:
