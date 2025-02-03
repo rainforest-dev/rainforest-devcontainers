@@ -1,0 +1,28 @@
+name: pre-build dev container image
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build Dev Container - NX
+        uses: devcontainers/cli@v0.3
+        with:
+          subFolder: common/nx
+          configFile: common/nx/devcontainer.json
+          imageName: ghcr.io/rainforest-dev/nx
+          cacheFrom: ghcr.io/rainforest-dev/nx
+          push: always
+          platform: linux/amd64, linux/arm64
