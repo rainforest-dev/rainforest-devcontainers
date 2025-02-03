@@ -6,8 +6,12 @@ on:
       - main
   workflow_dispatch:
 jobs:
-  build:
-    runs-on: ubuntu-24.04-arm
+  pre-build:
+    strategy:
+      matrix:
+        os: [macos-latest]
+        module: [nx, node]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -20,8 +24,8 @@ jobs:
       - name: Build Dev Container - NX
         uses: devcontainers/ci@v0.3
         with:
-          subFolder: common/nx
-          configFile: common/nx/devcontainer.json
-          imageName: ghcr.io/rainforest-dev/nx
-          cacheFrom: ghcr.io/rainforest-dev/nx
+          subFolder: common/${{ matrix.module }}
+          configFile: common/${{ matrix.module }}/devcontainer.json
+          imageName: ghcr.io/rainforest-dev/${{ matrix.module }}
+          cacheFrom: ghcr.io/rainforest-dev/${{ matrix.module }}
           push: always
