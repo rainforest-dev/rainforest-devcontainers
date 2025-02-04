@@ -3,7 +3,7 @@
 {
 	"name": "Nx Monorepo",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "ghcr.io/rainforest-dev/node:latest",
+	"image": "ghcr.io/rainforest-dev/devcontainer:node",
 	"features": {
 		"ghcr.io/devcontainers-contrib/features/nx-npm:1": {}
 	},
