@@ -26,6 +26,7 @@ jobs:
         with:
           subFolder: common/${{ matrix.module }}
           configFile: common/${{ matrix.module }}/devcontainer.json
-          imageName: ghcr.io/rainforest-dev/${{ matrix.module }}
-          cacheFrom: ghcr.io/rainforest-dev/${{ matrix.module }}
+          imageName: ghcr.io/rainforest-dev/devcontainer
+          imageTag: ${{ matrix.module }},${{ matrix.os }},${{ matrix.module }}-${{ matrix.os }}
+          cacheFrom: ghcr.io/rainforest-dev/devcontainer:${{ matrix.module }}-${{ matrix.os }}
           push: always
