@@ -1,0 +1,8 @@
+{
+  "name": "Tory Burch Agent",
+  "image": "ghcr.io/rainforest-dev/devcontainer:node",
+  "features": {
+    "ghcr.io/devcontainers-extra/features/mkcert:1": {}
+  },
+  "postCreateCommand": "yarn install"
+}
